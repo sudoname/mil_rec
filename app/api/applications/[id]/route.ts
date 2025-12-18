@@ -4,9 +4,10 @@ import { prisma } from '@/lib/prisma';
 // PATCH - Update application status
 export async function PATCH(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const body = await request.json();
     const { status } = body;
 
@@ -21,7 +22,7 @@ export async function PATCH(
 
     // Update application
     const application = await prisma.application.update({
-      where: { id: params.id },
+      where: { id },
       data: { status },
     });
 
@@ -50,11 +51,12 @@ export async function PATCH(
 // GET - Get single application details
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const application = await prisma.application.findUnique({
-      where: { id: params.id },
+      where: { id },
     });
 
     if (!application) {
