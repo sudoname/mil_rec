@@ -1,0 +1,114 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 7 20 39;
+    --foreground: 230 238 246;
+  }
+
+  body {
+    @apply bg-military-midnight text-military-smoke antialiased;
+    background-image:
+      radial-gradient(circle at 20% 30%, rgba(212, 175, 55, 0.03) 0%, transparent 50%),
+      radial-gradient(circle at 80% 70%, rgba(19, 107, 74, 0.03) 0%, transparent 50%);
+  }
+}
+
+@layer components {
+  /* Glassmorphism Card */
+  .glass-card {
+    @apply bg-white/[0.06] backdrop-blur-md border border-white/10 rounded-xl shadow-lg;
+  }
+
+  .glass-card-hover {
+    @apply glass-card hover:bg-white/[0.08] hover:border-military-gold/30 transition-all duration-300 cursor-pointer;
+  }
+
+  /* Glow Effect */
+  .glow-border {
+    @apply border border-military-gold/30 shadow-glow;
+  }
+
+  .glow-text {
+    text-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+  }
+
+  /* Buttons */
+  .btn-primary {
+    @apply bg-military-field-green text-white font-semibold py-3 px-8 rounded-lg hover:bg-military-field-green/90 hover:shadow-glow transform hover:scale-[1.02] transition-all duration-200;
+  }
+
+  .btn-secondary {
+    @apply bg-white/10 backdrop-blur-sm text-military-smoke font-semibold py-3 px-8 rounded-lg border border-white/20 hover:bg-white/15 hover:border-military-gold/50 transform hover:scale-[1.02] transition-all duration-200;
+  }
+
+  .btn-danger {
+    @apply bg-military-alert-red text-white font-semibold py-3 px-8 rounded-lg hover:bg-military-alert-red/90 transform hover:scale-[1.02] transition-all duration-200;
+  }
+
+  /* Input Styling */
+  .input-field {
+    @apply bg-white/5 border border-white/20 rounded-lg px-4 py-3 text-military-smoke placeholder-military-muted focus:border-military-gold focus:ring-2 focus:ring-military-gold/30 focus:outline-none transition-all;
+  }
+
+  /* Typography */
+  .heading-military {
+    @apply text-4xl md:text-6xl font-black uppercase tracking-wider text-military-gold;
+  }
+
+  .heading-section {
+    @apply text-3xl md:text-4xl font-bold text-military-gold mb-6;
+  }
+
+  /* Status Badges */
+  .badge-new {
+    @apply inline-block px-3 py-1 rounded-full text-xs font-bold bg-blue-500/20 text-blue-300 border border-blue-500/50;
+  }
+
+  .badge-reviewing {
+    @apply inline-block px-3 py-1 rounded-full text-xs font-bold bg-yellow-500/20 text-yellow-300 border border-yellow-500/50;
+  }
+
+  .badge-shortlisted {
+    @apply inline-block px-3 py-1 rounded-full text-xs font-bold bg-green-500/20 text-green-300 border border-green-500/50;
+  }
+
+  .badge-contacted {
+    @apply inline-block px-3 py-1 rounded-full text-xs font-bold bg-purple-500/20 text-purple-300 border border-purple-500/50;
+  }
+
+  .badge-rejected {
+    @apply inline-block px-3 py-1 rounded-full text-xs font-bold bg-red-500/20 text-red-300 border border-red-500/50;
+  }
+}
+
+/* Scroll animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+/* Carousel dots */
+.carousel-dots {
+  @apply flex justify-center gap-2 mt-4;
+}
+
+.carousel-dot {
+  @apply w-3 h-3 rounded-full bg-white/30 cursor-pointer transition-all;
+}
+
+.carousel-dot.active {
+  @apply bg-military-gold w-8;
+}

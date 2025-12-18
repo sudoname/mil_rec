@@ -1,0 +1,154 @@
+// This is your Prisma schema file
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String?
+  role      String   @default("admin")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("users")
+}
+
+enum ApplicationStatus {
+  NEW
+  REVIEWING
+  SHORTLISTED
+  CONTACTED
+  REJECTED
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
+model Application {
+  id            String            @id @default(cuid())
+  referenceId   String            @unique
+
+  // Personal Info
+  firstName     String
+  lastName      String
+  middleName    String?
+  phone         String
+  email         String?
+  gender        Gender
+  dateOfBirth   DateTime
+
+  // Lagos Indigene Info
+  lga           String
+  placeOfOrigin String
+  homeAddress   String
+  currentAddress String
+
+  // Education
+  qualification String
+  numberOfPasses Int?
+  numberOfSittings Int?
+  yearOfExam    String?
+
+  // Branch Interest (stored as JSON array)
+  branches      String
+
+  // Skills (stored as JSON array)
+  skills        String?
+
+  // Status
+  status        ApplicationStatus @default(NEW)
+  internalNotes String?
+
+  // Timestamps
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+
+  // Relations
+  uploads       UploadedFile[]
+
+  @@index([referenceId])
+  @@index([phone])
+  @@index([status])
+  @@index([createdAt])
+  @@map("applications")
+}
+
+model UploadedFile {
+  id            String      @id @default(cuid())
+  applicationId String
+  fileType      String      // passport, id, certificate
+  fileName      String
+  filePath      String
+  fileSize      Int
+  createdAt     DateTime    @default(now())
+
+  application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+
+  @@index([applicationId])
+  @@map("uploaded_files")
+}
+
+model ContactMessage {
+  id        String   @id @default(cuid())
+  name      String
+  contact   String
+  message   String
+  isResolved Boolean @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([isResolved])
+  @@index([createdAt])
+  @@map("contact_messages")
+}
+
+model Poster {
+  id          String   @id @default(cuid())
+  title       String
+  caption     String?
+  imageUrl    String
+  active      Boolean  @default(true)
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([active, sortOrder])
+  @@map("posters")
+}
+
+model SiteSetting {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     String   @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([key])
+  @@map("site_settings")
+}
+
+model ArmyAdmission {
+  id              String   @id @default(cuid())
+  applicationNo   String   @unique
+  surname         String
+  firstName       String
+  otherName       String?
+  listType        String   // 'MAIN' or 'SUPPLEMENTARY'
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([listType])
+  @@index([applicationNo])
+  @@map("army_admissions")
+}
