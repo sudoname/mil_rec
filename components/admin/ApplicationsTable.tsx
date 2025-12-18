@@ -17,6 +17,15 @@ interface Application {
   createdAt: string;
 }
 
+interface FullApplication extends Application {
+  currentAddress: string;
+  permanentAddress: string;
+  highestQualification: string;
+  numberOfPasses: number;
+  examYear: number;
+  preferredSkills: string | null;
+}
+
 export default function ApplicationsTable() {
   const [applications, setApplications] = useState<Application[]>([]);
   const [filteredApplications, setFilteredApplications] = useState<Application[]>([]);
@@ -25,9 +34,10 @@ export default function ApplicationsTable() {
   const [statusFilter, setStatusFilter] = useState('ALL');
   const [lgaFilter, setLgaFilter] = useState('ALL');
   const [branchFilter, setBranchFilter] = useState('ALL');
-  const [selectedApplication, setSelectedApplication] = useState<Application | null>(null);
+  const [selectedApplication, setSelectedApplication] = useState<FullApplication | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
+  const [loadingDetails, setLoadingDetails] = useState(false);
 
   // Fetch applications
   useEffect(() => {
@@ -47,6 +57,22 @@ export default function ApplicationsTable() {
       console.error('Error fetching applications:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Fetch full application details
+  const handleViewDetails = async (applicationId: string) => {
+    try {
+      setLoadingDetails(true);
+      const response = await fetch(`/api/applications/${applicationId}`);
+      if (response.ok) {
+        const fullData = await response.json();
+        setSelectedApplication(fullData);
+      }
+    } catch (error) {
+      console.error('Error fetching application details:', error);
+    } finally {
+      setLoadingDetails(false);
     }
   };
 
@@ -328,10 +354,11 @@ export default function ApplicationsTable() {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm">
                       <button
-                        onClick={() => setSelectedApplication(app)}
-                        className="text-military-gold hover:text-military-gold/80 font-semibold"
+                        onClick={() => handleViewDetails(app.id)}
+                        disabled={loadingDetails}
+                        className="text-military-gold hover:text-military-gold/80 font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
                       >
-                        View Details
+                        {loadingDetails ? 'Loading...' : 'View Details'}
                       </button>
                     </td>
                   </tr>
